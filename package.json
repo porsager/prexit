@@ -1,0 +1,12 @@
+{
+  "name": "prexit",
+  "version": "0.0.1",
+  "description": "A graceful way to shutdown / handle process exit",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "author": "Rasmus Porsager <rasmus@porsager.com>",
+  "license": "WTFPL",
+  "repository": "porsager/prexit"
+}
