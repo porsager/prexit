@@ -1,6 +1,6 @@
 [![version](https://img.shields.io/npm/v/prexit.svg)]() [![license](https://img.shields.io/github/license/porsager/prexit.svg)]()
 
-# Prexit 
+# 🚪 Prexit 
 
 A graceful way to shutdown / handle **PR**ocess **EXIT** - way better than other \*rexits
 
