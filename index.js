@@ -30,11 +30,12 @@ function handle(signal, fn) {
     exitPromise = exitPromise.then(() => Promise.all(fns.map(fn =>
       Promise.resolve(fn.apply(fn, arguments))
     )))
-    .then(prexit.ondone, prexit.ondone)
+    .catch(() => prexit.code = prexit.code || 1)
+    .then(prexit.ondone)
   })
 }
 
+prexit.code = 0
 prexit.logExceptions = true
-prexit.ondone = () => process.exit() // eslint-disable-line
-prexit.signals = ['exit', 'uncaughtException', 'SIGTSTP', 'SIGQUIT', 'SIGHUP', 'SIGTERM', 'SIGINT']
+prexit.ondone = () => process.exit(prexit.code) // eslint-disable-line
 prexit.signals = ['beforeExit', 'uncaughtException', 'SIGTSTP', 'SIGQUIT', 'SIGHUP', 'SIGTERM', 'SIGINT']
