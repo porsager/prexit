@@ -10,12 +10,25 @@ const prexit = require('prexit')
 prexit((signal, code_or_err) => {
   // Do cleanup before shutdown
   // Return a promise to delay exit
+  // set prexit.code to exit with non 0
+  // eg prexit.code = 1
+})
+```
+
+Here's a sample for shutting down an http server and database.
+First we stop the http server from accepting any new connections.
+Then we gracefully close the database connection to allow any pending queries to resolve.
+
+```js
+prexit(async () => {
+  await new Promise(r => server.close(r))
+  await db.end({ timeout: 5 })
 })
 ```
 
 Prexit is a simple function that takes a callback. This will be called with the signal and exit code / error on the following `process` events.
 
-`exit | uncaughtException | SIGTSTP | SIGQUIT | SIGHUP | SIGTERM | SIGINT`
+`beforeExit | uncaughtException | SIGTSTP | SIGQUIT | SIGHUP | SIGTERM | SIGINT`
 
 You can call prexit as many times as you'd like so you can do cleanup in the relevant places in your code. Prexit will await all promises that callbacks returns, and will ensure they are only called once. After all the promises finalizes prexit will call `prexit.ondone()` which defaults to calling `process.exit()`.
 
