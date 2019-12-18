@@ -37,3 +37,4 @@ function handle(signal, fn) {
 prexit.logExceptions = true
 prexit.ondone = () => process.exit() // eslint-disable-line
 prexit.signals = ['exit', 'uncaughtException', 'SIGTSTP', 'SIGQUIT', 'SIGHUP', 'SIGTERM', 'SIGINT']
+prexit.signals = ['beforeExit', 'uncaughtException', 'SIGTSTP', 'SIGQUIT', 'SIGHUP', 'SIGTERM', 'SIGINT']
