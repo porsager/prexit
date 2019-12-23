@@ -11,7 +11,7 @@ function prexit(signals, fn) {
   }
 
   let called = false
-  ;[].concat(signals).forEach(signal => handle(signal, function() {
+  ;['prexit'].concat(signals).forEach(signal => handle(signal, function() {
     if (called) return
     called = true
     return fn.apply(fn, arguments)
@@ -33,6 +33,16 @@ function handle(signal, fn) {
     .catch(() => prexit.code = prexit.code || 1)
     .then(prexit.ondone)
   })
+}
+
+prexit.exit = function(signal, code) {
+  if (typeof signal === 'number') {
+    code = signal
+    signal = 'prexit'
+  }
+
+  prexit.code = code || 0
+  process.emit('prexit', signal || 'prexit', prexit.code)
 }
 
 prexit.code = 0

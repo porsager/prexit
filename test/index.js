@@ -25,5 +25,5 @@ prexit('SIGINT', (...args) => {
 })
 
 setTimeout(() => {
-  throw undefined
+  prexit.exit()
 }, 1500)
