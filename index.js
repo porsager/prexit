@@ -1,6 +1,8 @@
 const handlers = {}
+    , last = []
 
 let exitPromise = Promise.resolve()
+  , finished = false
 
 module.exports = prexit
 
@@ -27,13 +29,24 @@ function handle(signal, fn) {
 
   process.on(signal, function(err) {
     signal === 'uncaughtException' && prexit.logExceptions && console.error((err && 'stack' in err) ? err.stack : new Error(err).stack)
-    exitPromise = exitPromise.then(() => Promise.all(fns.map(fn =>
+    exitPromise = Promise.all(fns.map(fn =>
       Promise.resolve(fn.apply(fn, arguments))
-    )))
+    ).concat(exitPromise))
     .catch(() => prexit.code = prexit.code || 1)
-    .then(prexit.ondone)
+    .then(() => done(signal))
   })
 }
+
+function done(signal) {
+  if (finished)
+    return
+
+  finished = true
+  last.forEach(fn => fn(signal))
+  prexit.ondone()
+}
+
+prexit.last = fn => last.push(fn)
 
 prexit.exit = function(signal, code) {
   if (typeof signal === 'number') {

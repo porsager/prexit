@@ -8,5 +8,16 @@
   },
   "author": "Rasmus Porsager <rasmus@porsager.com>",
   "license": "WTFPL",
-  "repository": "porsager/prexit"
+  "repository": "porsager/prexit",
+  "tags": [
+    "process",
+    "exit",
+    "graceful",
+    "shutdown",
+    "SIGTERM",
+    "SIGHUP",
+    "SIGINT",
+    "prexit",
+    "unhandledException"
+  ]
 }
