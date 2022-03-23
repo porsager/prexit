@@ -13,6 +13,8 @@ declare module "prexit" {
   export function last(
     callback?: (signal: PrexitSignal, code_or_err: Error | number) => void
   ): void;
+  export function exit(signal?: PrexitSignal, code?: number): void;
+  export function exit(code: number): void;
   export default function (
     callback?: (signal: PrexitSignal, code_or_err: Error | number) => void
   ): void;
