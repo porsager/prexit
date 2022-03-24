@@ -16,10 +16,10 @@ declare module "prexit" {
   export function exit(signal?: PrexitSignal, code?: number): void;
   export function exit(code: number): void;
   export default function (
-    callback?: (signal: PrexitSignal, code_or_err: Error | number) => void
+    callback?: (signal: PrexitSignal, code_or_err: Error | number) => unknown | Promise<unknown>
   ): void;
   export default function (
     event: string | string[],
-    callback?: (signal: PrexitSignal, code_or_err: Error | number) => void
+    callback?: (signal: PrexitSignal, code_or_err: Error | number) => unknown | Promise<unknown>
   ): void;
 }
