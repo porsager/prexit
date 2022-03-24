@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A graceful way to shutdown / handle process exit",
   "main": "index.js",
+  "types": "types.d.ts",
   "scripts": {
     "test": "node test"
   },
