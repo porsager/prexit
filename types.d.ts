@@ -14,10 +14,10 @@ declare module "prexit" {
     callback?: (signal: PrexitSignal, code_or_err: Error | number) => void
   ): void;
   export default function (
-    callback?: (signal: PrexitSignal, code_or_err: Error | number) => void
+    callback?: (signal: PrexitSignal, code_or_err: Error | number) => unknown | Promise<unknown>
   ): void;
   export default function (
     event: string | string[],
-    callback?: (signal: PrexitSignal, code_or_err: Error | number) => void
+    callback?: (signal: PrexitSignal, code_or_err: Error | number) => unknown | Promise<unknown>
   ): void;
 }
