@@ -4,6 +4,7 @@
   "description": "A graceful way to shutdown / handle process exit",
   "main": "index.js",
   "types": "types.d.ts",
+  "type": "module",
   "scripts": {
     "test": "node test"
   },

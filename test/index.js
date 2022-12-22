@@ -1,4 +1,4 @@
-const prexit = require('../index.js')
+import prexit from '../index.js'
 
 prexit((...args) => {
   console.log('Received', args)
@@ -12,7 +12,6 @@ prexit((...args) => {
 })
 
 setTimeout(() => {}, 1000000)
-
 
 prexit('SIGINT', (...args) => {
   console.log('Received2', args)

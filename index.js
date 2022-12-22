@@ -4,7 +4,7 @@ const handlers = {}
 let exitPromise = Promise.resolve()
   , finished = false
 
-module.exports = prexit
+export default prexit
 
 function prexit(signals, fn) {
   if (typeof signals === 'function') {
@@ -13,11 +13,37 @@ function prexit(signals, fn) {
   }
 
   let called = false
-  ;['prexit'].concat(signals).forEach(signal => handle(signal, function() {
-    if (called) return
+  ;['prexit'].concat(signals).forEach(signal => handle(signal, function(signal, error) {
+    if (called)
+      return
     called = true
-    return fn.apply(fn, arguments)
+    return fn(signal, error)
   }))
+}
+
+prexit.signals = ['beforeExit', 'uncaughtException', 'SIGTSTP', 'SIGQUIT', 'SIGHUP', 'SIGTERM', 'SIGINT']
+prexit.logExceptions = true
+
+prexit.last = fn => last.push(fn)
+prexit.exit = exit
+prexit.ondone = ondone
+
+function exit(signal, code, error) {
+  if (typeof signal === 'number') {
+    error = code
+    code = signal
+    signal = 'prexit'
+  }
+
+  code && (process.exitCode = code)
+  Object.keys(handlers).length
+    ? process.emit('prexit', signal || 'prexit', error)
+    : process.exit()
+}
+
+function ondone(error) {
+  console.error(error) // eslint-disable-line
+  process.exit() // eslint-disable-line
 }
 
 function handle(signal, fn) {
@@ -27,38 +53,30 @@ function handle(signal, fn) {
 
   const fns = handlers[signal] = [fn]
 
-  process.on(signal, function(err) {
-    signal === 'uncaughtException' && prexit.logExceptions && console.error((err && 'stack' in err) ? err.stack : new Error(err).stack)
+  process.on(signal, function(error) {
+    if (signal === 'uncaughtException' && prexit.logExceptions)
+      console.error((error && 'stack' in error) ? error.stack : new Error(error).stack) // eslint-disable-line
+
     exitPromise = Promise.all(fns.map(fn =>
-      Promise.resolve(fn.apply(fn, arguments))
+      Promise.resolve(fn(signal, error))
     ).concat(exitPromise))
-    .catch(() => prexit.code = prexit.code || 1)
-    .then(() => done(signal))
+    .catch(() => process.exitCode || (process.exitCode = 1))
+    .then(() => done(signal, error))
   })
 }
 
-function done(signal) {
+function done(signal, error) {
   if (finished)
     return
 
   finished = true
-  last.forEach(fn => fn(signal))
-  prexit.ondone()
-}
-
-prexit.last = fn => last.push(fn)
-
-prexit.exit = function(signal, code) {
-  if (typeof signal === 'number') {
-    code = signal
-    signal = 'prexit'
+  try {
+    last.forEach(fn => fn(signal))
+  } catch (err) {
+    error
+      ? console.error(err) // eslint-disable-line
+      : error = err
   }
 
-  prexit.code = code || 0
-  process.emit('prexit', signal || 'prexit', prexit.code)
+  prexit.ondone(signal, error)
 }
-
-prexit.code = 0
-prexit.logExceptions = true
-prexit.ondone = () => process.exit(prexit.code) // eslint-disable-line
-prexit.signals = ['beforeExit', 'uncaughtException', 'SIGTSTP', 'SIGQUIT', 'SIGHUP', 'SIGTERM', 'SIGINT']

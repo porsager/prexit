@@ -5,9 +5,9 @@
 A graceful way to shutdown / handle **PR**ocess **EXIT** - way better than other \*rexits
 
 ```js
-const prexit = require('prexit')
+import prexit from 'prexit'
 
-prexit((signal, code_or_err) => {
+prexit((signal, code, err) => {
   // Do cleanup before shutdown
   // Return a promise to delay exit
   // set prexit.code to exit with non 0
@@ -30,7 +30,7 @@ Prexit is a simple function that takes a callback. This will be called with the 
 
 `beforeExit | uncaughtException | SIGTSTP | SIGQUIT | SIGHUP | SIGTERM | SIGINT`
 
-You can call prexit as many times as you'd like so you can do cleanup in the relevant places in your code. Prexit will await all promises that callbacks returns, and will ensure they are only called once. After all the promises finalizes prexit will call `prexit.ondone()` which defaults to calling `process.exit(prexit.code)`.
+You can call prexit as many times as you'd like so you can do cleanup in the relevant places in your code. Prexit will await all promises that callbacks returns, and will ensure they are only called once. After all the promises are settled prexit will call `prexit.ondone()` which defaults to calling `process.exit(prexit.code)`.
 
 If you need to do synchronous cleanup after any async cleanup and right before prexit.ondone is called, you can use `prexit.last(fn)`
 
