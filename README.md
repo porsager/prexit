@@ -7,7 +7,7 @@ A graceful way to shutdown / handle **PR**ocess **EXIT** - way better than other
 ```js
 import prexit from 'prexit'
 
-prexit((signal, code, err) => {
+prexit((signal, [err]) => {
   // Do cleanup before shutdown
   // Return a promise to delay exit
   // set prexit.code to exit with non 0

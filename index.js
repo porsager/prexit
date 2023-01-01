@@ -37,12 +37,12 @@ function exit(signal, code, error) {
 
   code && (process.exitCode = code)
   Object.keys(handlers).length
-    ? process.emit('prexit', signal || 'prexit', error)
+    ? process.emit('prexit', error)
     : process.exit()
 }
 
-function ondone(error) {
-  console.error(error) // eslint-disable-line
+function ondone(signal, error) {
+  error && console.error(error) // eslint-disable-line
   process.exit() // eslint-disable-line
 }
 
@@ -55,7 +55,7 @@ function handle(signal, fn) {
 
   process.on(signal, function(error) {
     if (signal === 'uncaughtException' && prexit.logExceptions)
-      console.error((error && 'stack' in error) ? error.stack : new Error(error).stack) // eslint-disable-line
+      console.error('yooo', (error && 'stack' in error) ? error.stack : new Error(error).stack) // eslint-disable-line
 
     exitPromise = Promise.all(fns.map(fn =>
       Promise.resolve(fn(signal, error))
