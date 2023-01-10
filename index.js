@@ -54,6 +54,7 @@ function handle(signal, fn) {
   const fns = handlers[signal] = [fn]
 
   process.on(signal, function(error) {
+    error === signal && (error = null)
     if ((signal === 'uncaughtException' || signal === 'unhandledRejection') && prexit.logExceptions)
       console.error((error && 'stack' in error) ? error.stack : new Error(error).stack) // eslint-disable-line
 
