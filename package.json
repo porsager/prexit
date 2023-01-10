@@ -1,6 +1,6 @@
 {
   "name": "prexit",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A graceful way to shutdown / handle process exit",
   "main": "index.js",
   "types": "types.d.ts",
