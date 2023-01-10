@@ -21,7 +21,7 @@ function prexit(signals, fn) {
   }))
 }
 
-prexit.signals = ['beforeExit', 'uncaughtException', 'SIGTSTP', 'SIGQUIT', 'SIGHUP', 'SIGTERM', 'SIGINT']
+prexit.signals = ['beforeExit', 'uncaughtException', 'unhandledRejection', 'SIGTSTP', 'SIGQUIT', 'SIGHUP', 'SIGTERM', 'SIGINT']
 prexit.logExceptions = true
 
 prexit.last = fn => last.push(fn)
@@ -54,8 +54,8 @@ function handle(signal, fn) {
   const fns = handlers[signal] = [fn]
 
   process.on(signal, function(error) {
-    if (signal === 'uncaughtException' && prexit.logExceptions)
-      console.error('yooo', (error && 'stack' in error) ? error.stack : new Error(error).stack) // eslint-disable-line
+    if ((signal === 'uncaughtException' || signal === 'unhandledRejection') && prexit.logExceptions)
+      console.error((error && 'stack' in error) ? error.stack : new Error(error).stack) // eslint-disable-line
 
     exitPromise = Promise.all(fns.map(fn =>
       Promise.resolve(fn(signal, error))
