@@ -20,7 +20,7 @@ function prexit(signals, fn) {
   }))
 }
 
-prexit.signals = ['beforeExit', 'uncaughtException', 'unhandledRejection', 'SIGTSTP', 'SIGQUIT', 'SIGHUP', 'SIGTERM', 'SIGINT']
+prexit.signals = ['exit', 'beforeExit', 'uncaughtException', 'unhandledRejection', 'SIGTSTP', 'SIGQUIT', 'SIGHUP', 'SIGTERM', 'SIGINT']
 prexit.logExceptions = true
 
 prexit.last = addLast
