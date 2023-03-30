@@ -1,8 +1,7 @@
 const handlers = {}
     , last = []
 
-let exitPromise = Promise.resolve()
-  , finished = false
+let finished = false
 
 export default prexit
 
@@ -24,9 +23,14 @@ function prexit(signals, fn) {
 prexit.signals = ['beforeExit', 'uncaughtException', 'unhandledRejection', 'SIGTSTP', 'SIGQUIT', 'SIGHUP', 'SIGTERM', 'SIGINT']
 prexit.logExceptions = true
 
-prexit.last = fn => last.push(fn)
+prexit.last = addLast
 prexit.exit = exit
 prexit.ondone = ondone
+
+function addLast(fn) {
+  last.length || prexit(() => {})
+  last.push(fn)
+}
 
 function exit(signal, code, error) {
   if (typeof signal === 'number') {
@@ -42,7 +46,6 @@ function exit(signal, code, error) {
 }
 
 function ondone(signal, error) {
-  error && console.error(error) // eslint-disable-line
   process.exit() // eslint-disable-line
 }
 
@@ -53,16 +56,20 @@ function handle(signal, fn) {
 
   const fns = handlers[signal] = [fn]
 
-  process.on(signal, function(error) {
+  process.on(signal, async function(error) {
     error === signal && (error = null)
     if ((signal === 'uncaughtException' || signal === 'unhandledRejection') && prexit.logExceptions)
-      console.error((error && 'stack' in error) ? error.stack : new Error(error).stack) // eslint-disable-line
+      console.error(error) // eslint-disable-line
 
-    exitPromise = Promise.all(fns.map(fn =>
-      Promise.resolve(fn(signal, error))
-    ).concat(exitPromise))
-    .catch(() => process.exitCode || (process.exitCode = 1))
-    .then(() => done(signal, error))
+    try {
+      const xs = fns.map(fn => fn(signal, error)).filter(x => x && typeof x.then === 'function')
+      xs.length && await Promise.all(xs)
+    } catch (error) {
+      process.exitCode || (process.exitCode = 1)
+      prexit.logExceptions && console.error(error) // eslint-disable-line
+    }
+
+    done(signal, error)
   })
 }
 
