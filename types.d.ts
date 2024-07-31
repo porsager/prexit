@@ -10,6 +10,10 @@ type PrexitSignal =
 declare module "prexit" {
   interface Prexit {
     code: number;
+    exiting: boolean;
+    signals: PrexitSignal[];
+    logExceptions: boolean;
+
     ondone(): void;
     last(
       callback?: (signal: PrexitSignal, code: number, error?: Error) => void
