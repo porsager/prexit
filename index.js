@@ -22,6 +22,7 @@ function prexit(signals, fn) {
 
 prexit.signals = ['exit', 'beforeExit', 'uncaughtException', 'unhandledRejection', 'SIGTSTP', 'SIGQUIT', 'SIGHUP', 'SIGTERM', 'SIGINT']
 prexit.logExceptions = true
+prexit.exiting = false
 
 prexit.last = addLast
 prexit.exit = exit
