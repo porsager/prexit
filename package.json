@@ -11,6 +11,9 @@
   "author": "Rasmus Porsager <rasmus@porsager.com>",
   "license": "WTFPL",
   "repository": "porsager/prexit",
+  "engines": {
+    "node": ">=12"
+  },
   "tags": [
     "process",
     "exit",
